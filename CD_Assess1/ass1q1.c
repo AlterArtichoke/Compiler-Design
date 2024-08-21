@@ -86,7 +86,7 @@ void createDFA(DFA *dfa) {
     for (int i = 0; i < dfa->numStates; i++) {
         for (int j = 0; j < dfa->numSymbols; j++) {
             char nextStateName[MAX_STATE_NAME_LENGTH];
-            printf("Transition: ('%s', '%s') : ", dfa->stateNames[i], dfa->symbols[j]);
+            printf("D['%s', '%s'] : ", dfa->stateNames[i], dfa->symbols[j]);
             scanf("%s", nextStateName);
 
             int nextState = findStateIndex(dfa, nextStateName);
@@ -94,6 +94,29 @@ void createDFA(DFA *dfa) {
                 dfa->transition[i][j] = nextState;
             }
         }
+    }
+}
+
+// Function to display the transition table
+void displayTransitionTable(DFA *dfa) {
+    printf("\nTransition Table:\n");
+    printf("State\\Symbol");
+    for (int i = 0; i < dfa->numSymbols; i++) {
+        printf("\t%s", dfa->symbols[i]);
+    }
+    printf("\n");
+
+    for (int i = 0; i < dfa->numStates; i++) {
+        printf("%s", dfa->stateNames[i]);
+        for (int j = 0; j < dfa->numSymbols; j++) {
+            int nextState = dfa->transition[i][j];
+            if (nextState != -1) {
+                printf("\t%s", dfa->stateNames[nextState]);
+            } else {
+                printf("\t-");
+            }
+        }
+        printf("\n");
     }
 }
 
@@ -111,13 +134,13 @@ int isAccepted(DFA *dfa, const char *input) {
         int symbolIndex = findSymbolIndex(dfa, symbolName);
         if (symbolIndex == -1) {
             printf("\nInvalid symbol '%s'.\n", symbolName);
-            return 0;
+            return 0; // Invalid symbol, string is rejected
         }
 
         int nextState = dfa->transition[currentState][symbolIndex];
         if (nextState == -1) {
             printf("\nInvalid transition on symbol '%s'.\n", symbolName);
-            return 0; 
+            return 0; // Transition not defined, string is rejected
         }
 
         currentState = nextState;
@@ -132,6 +155,9 @@ int main() {
     DFA dfa;
     initializeDFA(&dfa);
     createDFA(&dfa);
+
+    // Display the transition table
+    displayTransitionTable(&dfa);
 
     char input[100];
     printf("Enter a string to check: ");
