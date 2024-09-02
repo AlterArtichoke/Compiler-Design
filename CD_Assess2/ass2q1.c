@@ -3,8 +3,9 @@
 #include <string.h>
 
 #define MAX_TOKEN_LENGTH 100
+#define MAX_INPUT_LENGTH 256
 
-const char *keywords[] = {"int", "return", "if", "else", "while", "for", "do", "switch", "case", "default", "break", "continue", "void", "char", "float", "double", "long", "short", "unsigned", "signed", "static", "struct", "union", "enum", "typedef", "const", "sizeof", "volatile", "extern", "register", "auto", "goto", "include", "define", NULL};
+const char *keywords[] = {"int", "return", "scanf", "if", "else", "while", "for", "do", "switch", "case", "default", "break", "continue", "void", "char", "float", "double", "long", "short", "unsigned", "signed", "static", "struct", "union", "enum", "typedef", "const", "sizeof", "volatile", "extern", "register", "auto", "goto", "include", "define", NULL};
 
 int isKeyword(const char *token) {
     for (int i = 0; keywords[i] != NULL; i++) {
@@ -101,9 +102,29 @@ void identifyTokens(char *input) {
     }
 }
 
+// int main() {
+//     char input[] = "int a = 10 + b;";
+//     printf("Input statement: %s\n\n", input);
+//     identifyTokens(input);
+//     return 0;
+// }
+
 int main() {
-    char input[] = "int a = 10 + b;";
-    printf("Input statement: %s\n\n", input);
-    identifyTokens(input);
+    char input[MAX_INPUT_LENGTH];
+
+    printf("Enter a statement: ");
+    if (fgets(input, sizeof(input), stdin) != NULL) {
+        // Remove the trailing newline character, if present
+        size_t len = strlen(input);
+        if (len > 0 && input[len - 1] == '\n') {
+            input[len - 1] = '\0';
+        }
+
+        printf("Input statement: %s\n\n", input);
+        identifyTokens(input);
+    } else {
+        printf("Error reading input.\n");
+    }
+
     return 0;
 }
