@@ -103,7 +103,7 @@ void identifyTokens(char *input) {
 
 int main() {
     char input[] = "int a = 10 + b;";
-    printf("Input statement: %s\n", input);
+    printf("Input statement: %s\n\n", input);
     identifyTokens(input);
     return 0;
 }
