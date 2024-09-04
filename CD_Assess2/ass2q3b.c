@@ -3,9 +3,9 @@
 #include <string.h>
 
 #define MAX_TOKEN_LENGTH 100
-#define MAX_INPUT_LENGTH 256
+#define MAX_LINE_LENGTH 256
 
-const char *keywords[] = {"int", "return", "scanf", "if", "else", "while", "for", "do", "switch", "case", "default", "break", "continue", "void", "char", "float", "double", "long", "short", "unsigned", "signed", "static", "struct", "union", "enum", "typedef", "const", "sizeof", "volatile", "extern", "register", "auto", "goto", "include", "define", NULL};
+const char *keywords[] = {"int", "scanf", "return", "if", "else", "while", "for", "do", "switch", "case", "default", "break", "continue", "void", "char", "float", "double", "long", "short", "unsigned", "signed", "static", "struct", "union", "enum", "typedef", "const", "sizeof", "volatile", "extern", "register", "auto", "goto", "include", "define", NULL};
 
 int isKeyword(const char *token) {
     for (int i = 0; keywords[i] != NULL; i++) {
@@ -102,29 +102,21 @@ void identifyTokens(char *input) {
     }
 }
 
-// int main() {
-//     char input[] = "int a = 10 + b;";
-//     printf("Input statement: %s\n\n", input);
-//     identifyTokens(input);
-//     return 0;
-// }
+void identifyTokensFromFile(FILE *file) {
+    char line[MAX_LINE_LENGTH];
+    while (fgets(line, sizeof(line), file)) {
+        identifyTokens(line);
+    }
+}
 
 int main() {
-    char input[MAX_INPUT_LENGTH];
-
-    printf("Enter a statement: ");
-    if (fgets(input, sizeof(input), stdin) != NULL) {
-        // Remove the trailing newline character, if present
-        size_t len = strlen(input);
-        if (len > 0 && input[len - 1] == '\n') {
-            input[len - 1] = '\0';
-        }
-
-        printf("Input statement: %s\n\n", input);
-        identifyTokens(input);
-    } else {
-        printf("Error reading input.\n");
+    FILE *file = fopen("input_program.txt", "r");
+    if (!file) {
+        printf("Error: Could not open file.\n\n");
+        return 1;
     }
 
+    identifyTokensFromFile(file);
+    fclose(file);
     return 0;
 }

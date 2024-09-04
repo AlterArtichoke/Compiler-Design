@@ -1,11 +1,12 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <ctype.h>
 #include <string.h>
 
 #define MAX_TOKEN_LENGTH 100
 #define MAX_LINE_LENGTH 256
 
-const char *keywords[] = {"int", "return", "if", "else", "while", "for", "do", "switch", "case", "default", "break", "continue", "void", "char", "float", "double", "long", "short", "unsigned", "signed", "static", "struct", "union", "enum", "typedef", "const", "sizeof", "volatile", "extern", "register", "auto", "goto", "include", "define", NULL};
+const char *keywords[] = {"int", "scanf", "return", "if", "else", "while", "for", "do", "switch", "case", "default", "break", "continue", "void", "char", "float", "double", "long", "short", "unsigned", "signed", "static", "struct", "union", "enum", "typedef", "const", "sizeof", "volatile", "extern", "register", "auto", "goto", "include", "define", NULL};
 
 int isKeyword(const char *token) {
     for (int i = 0; keywords[i] != NULL; i++) {
@@ -110,13 +111,38 @@ void identifyTokensFromFile(FILE *file) {
 }
 
 int main() {
-    FILE *file = fopen("input_program.txt", "r");
+    char filename[] = "user_program.txt";
+    FILE *file = fopen(filename, "w");
+
     if (!file) {
-        printf("Error: Could not open file.\n\n");
+        printf("Error: Could not open file for writing.\n");
         return 1;
     }
 
+    printf("Enter a small program (up to 5 lines), end input with a blank line:\n");
+
+    char input[MAX_LINE_LENGTH];
+    int lineCount = 0;
+
+    while (fgets(input, sizeof(input), stdin)) {
+        if (strcmp(input, "\n") == 0 || lineCount >= 5) {
+            break;
+        }
+        fputs(input, file);
+        lineCount++;
+    }
+
+    fclose(file);
+
+    // Now open the file for reading and identify tokens
+    file = fopen(filename, "r");
+    if (!file) {
+        printf("Error: Could not open file for reading.\n");
+        return 1;
+    }
+    printf("\n");
     identifyTokensFromFile(file);
     fclose(file);
+
     return 0;
 }
