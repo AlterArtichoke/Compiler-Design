@@ -102,13 +102,6 @@ void identifyTokens(char *input) {
     }
 }
 
-// int main() {
-//     char input[] = "int a = 10 + b;";
-//     printf("Input statement: %s\n\n", input);
-//     identifyTokens(input);
-//     return 0;
-// }
-
 int main() {
     char input[MAX_INPUT_LENGTH];
 

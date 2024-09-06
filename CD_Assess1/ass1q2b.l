@@ -27,3 +27,7 @@ int main()
     printf("Enter String:\n");
     yylex();
 }
+
+int yywrap(){
+    return 1;
+}
