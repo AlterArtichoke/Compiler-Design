@@ -53,17 +53,18 @@ int isEmpty() {
     return top == -1;
 }
 
-// Function to print stack contents and the remaining input
-void printStack(char input[], int inputIndex) {
-    printf("Stack: ");
+// Function to print stack contents
+void printStack() {
     for (int i = top; i >= 0; i--) {
         printf("%c", stack[i]);
     }
-    printf("\nInput: ");
+}
+
+// Function to print remaining input
+void printInput(char input[], int inputIndex) {
     for (int i = inputIndex; input[i] != '\0'; i++) {
         printf("%c", input[i]);
     }
-    printf("\n");
 }
 
 // Function to get terminal index
@@ -97,20 +98,30 @@ void predictiveParsing(char input[]) {
     push('$'); // Push end of input symbol
     push('E'); // Push start symbol
 
+    // Print table headers
+    printf("%-10s %-10s %-10s\n", "Stack", "Input", "Action");
+    printf("------------------------------------------\n");
+
     while (!isEmpty()) {
-        printStack(input, i); // Show the current stack content and input state
+        // Print the current stack and remaining input
+        printStack(); // Current stack
+        printf("\t");
+
+        printInput(input, i); // Remaining input
+        printf("\t");
+
         char topStack = stack[top]; // Get top of stack
         char currentInput = input[i]; // Get current input character
 
         // Check if both current input and top of stack are '$'
         if (currentInput == '$' && topStack == '$') {
-            printf("Input string is successfully parsed.\n");
+            printf("Success\n");
             return;
         }
 
         if (topStack == currentInput) {
             // Terminal matches, consume input
-            printf("Match: %c\n", currentInput);
+            printf("\tMatch %c\n", currentInput);
             pop();
             i++;
         } else if (isupper(topStack)) {
@@ -122,7 +133,7 @@ void predictiveParsing(char input[]) {
                 pop(); // Pop the non-terminal
 
                 // Get the production from the table
-                printf("Production used: %s\n", production[parseTable[row][col] - 1]);
+                printf("\tApply %s\n", production[parseTable[row][col] - 1]);
 
                 // Push the production to the stack in reverse order
                 char *prod = production[parseTable[row][col] - 1];
@@ -132,20 +143,20 @@ void predictiveParsing(char input[]) {
                     }
                 }
             } else {
-                printf("Error: No matching production found for %c\n", topStack);
+                printf("Error: No matching production found\n");
                 return;
             }
         } else {
-            printf("Error: Unexpected terminal symbol at stack: %c and input: %c\n", topStack, currentInput);
+            printf("Error: Unexpected symbol\n");
             return;
         }
     }
 
     // Final check to ensure successful parsing if not already checked
     if (input[i] == '$') {
-        printf("Input string is successfully parsed.\n");
+        printf("\tSuccess\n");
     } else {
-        printf("Error: Input string is not fully consumed.\n");
+        printf("Error: Input not fully consumed\n");
     }
 }
 
